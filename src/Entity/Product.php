@@ -20,10 +20,10 @@ class Product
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $price = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $url = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $image_url = null;
 
     public function getId(): ?int

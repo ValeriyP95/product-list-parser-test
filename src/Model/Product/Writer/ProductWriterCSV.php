@@ -20,8 +20,17 @@ class ProductWriterCSV implements ProductWriterInterface
     {
         Assert::allIsInstanceOf($productDTOs, ProductDTO::class);
 
+        $storageDirectoryPath = $this->projectDirectory . '/var/storage/';
+        if (!file_exists($storageDirectoryPath)) {
+            mkdir($storageDirectoryPath, 0777, true);
+        }
+
         $csvData = [];
-        $csvData[] = ['Name', 'Price', 'URL', 'Image URL', ];
+        $filePath = $storageDirectoryPath . 'products.csv';
+        if (!file_exists($filePath)) {
+            $csvData[] = ['Name', 'Price', 'URL', 'Image URL', ];
+        }
+
         foreach ($productDTOs as $productDTO) {
             $csvData[] = [
                 $productDTO->name,
@@ -31,13 +40,7 @@ class ProductWriterCSV implements ProductWriterInterface
             ];
         }
 
-        $storageDirectoryPath = $this->projectDirectory . '/var/storage/';
-
-        if (!file_exists($storageDirectoryPath)) {
-            mkdir($storageDirectoryPath, 0777, true);
-        }
-
-        $file = fopen($storageDirectoryPath . 'products.csv', "w");
+        $file = fopen($storageDirectoryPath . 'products.csv', "a+");
 
         try {
             foreach ($csvData as $line) {
