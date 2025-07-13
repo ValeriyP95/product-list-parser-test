@@ -31,7 +31,13 @@ class ProductWriterCSV implements ProductWriterInterface
             ];
         }
 
-        $file = fopen($this->projectDirectory . '/storage/products.csv', "w");
+        $storageDirectoryPath = $this->projectDirectory . '/var/storage/';
+
+        if (!file_exists($storageDirectoryPath)) {
+            mkdir($storageDirectoryPath, 0777, true);
+        }
+
+        $file = fopen($storageDirectoryPath . 'products.csv', "w");
 
         try {
             foreach ($csvData as $line) {
