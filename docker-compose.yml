@@ -1,0 +1,45 @@
+services:
+    app:
+        build:
+            dockerfile: Dockerfile
+        container_name: valeriyptest-app
+        restart: always
+        working_dir: /var/www/
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        volumes:
+            - .:/var/www
+    nginx:
+        image: nginx:1.19-alpine
+        container_name: valeriyptest-nginx
+        restart: always
+        ports:
+            - "8000:80"
+        volumes:
+            - .:/var/www
+            - ./docker/nginx:/etc/nginx/conf.d
+
+###> doctrine/doctrine-bundle ###
+    database:
+        image: mysql:${MYSQL_VERSION:-8}
+        environment:
+            MYSQL_DATABASE: ${MYSQL_DATABASE:-app}
+            # You should definitely change the password in production
+            MYSQL_RANDOM_ROOT_PASSWORD: "true"
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD:-secret}
+            MYSQL_USER: ${MYSQL_USER:-app}
+        healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            timeout: 5s
+            retries: 5
+            start_period: 60s
+        volumes:
+            - database_data:/var/lib/mysql:rw
+            # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+            # - ./docker/db/data:/var/lib/mysql:rw
+###< doctrine/doctrine-bundle ###
+
+volumes:
+###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###
