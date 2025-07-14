@@ -29,13 +29,4 @@ class ProductRepository extends ServiceEntityRepository
 
         $this->getEntityManager()->flush();
     }
-
-    public function findAll(): array
-    {
-        return $this->createQueryBuilder('product')
-            ->orderBy('product.id', 'ASC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
 }

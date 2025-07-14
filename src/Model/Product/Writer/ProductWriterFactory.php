@@ -20,7 +20,7 @@ class ProductWriterFactory
         return match ($productWriteSource) {
             ProductWriteSource::MySQL => $this->productWriterMySQL,
             ProductWriteSource::CSV => $this->productWriterCSV,
-            default => throw new \LogicException(sprintf('Unsupported product write source "%s"', $productWriteSource->name)),
+            default => throw new \InvalidArgumentException(sprintf('Unsupported product write source "%s"', $productWriteSource->name)),
         };
     }
 }

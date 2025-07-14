@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Model\Product\Processor\ProductListParsingProcessor;
+use App\Model\Product\Processor\ProductListExtractionProcessor;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ProductParseListCommand extends Command
 {
     public function __construct(
-        private ProductListParsingProcessor $productListParsingProcessor,
+        private ProductListExtractionProcessor $productListExtractionProcessor,
     ) {
         parent::__construct();
     }
@@ -37,7 +37,7 @@ class ProductParseListCommand extends Command
 
         $io->info('Starting processing product list parsing with dry run mode: ' . ($isDryRun ? 'ON' : 'OFF') . '.');
 
-        $this->productListParsingProcessor->process($isDryRun);
+        $this->productListExtractionProcessor->process($isDryRun);
 
         $io->success('Product list parsing processed successfully.');
 

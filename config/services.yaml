@@ -16,7 +16,7 @@ services:
     App\:
         resource: '../src/'
 
-    App\Model\Product\Processor\ProductListParsingProcessor:
+    App\Model\Product\Processor\ProductListExtractionProcessor:
         arguments:
             $productListParser: '@App\Model\Product\Parser\TelemartProductListParser'
 

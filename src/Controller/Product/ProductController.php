@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Product;
 
-use App\Model\Product\Processor\ProductListParsingProcessor;
+use App\Model\Product\Processor\ProductListExtractionProcessor;
 use App\Repository\ProductRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +21,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('/product/list', methods: ['GET'])]
-    public function getList(
+    public function get(
         ProductRepository $productRepository,
         NormalizerInterface $normalizer,
     ): JsonResponse {
@@ -38,12 +38,12 @@ class ProductController extends AbstractController
         }
     }
 
-    #[Route('/product/list', methods: ['POST'])]
-    public function saveList(
-        ProductListParsingProcessor $productListParsingProcessor,
+    #[Route('/product/list/extract', methods: ['POST'])]
+    public function extract(
+        ProductListExtractionProcessor $productListExtractionProcessor,
     ): JsonResponse {
         try {
-            $productListParsingProcessor->process();
+            $productListExtractionProcessor->process();
 
             return new JsonResponse(['success' => true]);
         } catch (\Throwable $exception) {

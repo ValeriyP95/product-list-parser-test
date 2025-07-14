@@ -8,7 +8,7 @@ use App\Model\Product\Parser\ProductListParserInterface;
 use App\Model\Product\Writer\Enum\ProductWriteSource;
 use App\Model\Product\Writer\ProductWriterFactory;
 
-class ProductListParsingProcessor
+class ProductListExtractionProcessor
 {
     public function __construct(
         private ProductListParserInterface $productListParser,
@@ -19,7 +19,7 @@ class ProductListParsingProcessor
     public function process(bool $isDryRun = false): void
     {
         if ($productDTOs = $this->productListParser->parse()) {
-            foreach (ProductWriteSource::cases() as $productWriteSource) {
+            foreach (ProductWriteSource::allowedCases() as $productWriteSource) {
                 $productWriter = $this->productWriterFactory->create($productWriteSource);
 
                 if (!$isDryRun) {

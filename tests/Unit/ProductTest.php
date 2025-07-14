@@ -6,7 +6,8 @@ namespace Test\Unit;
 
 use App\Model\Product\DTO\ProductDTO;
 use App\Model\Product\Parser\TelemartProductListParser;
-use App\Model\Product\Processor\ProductListParsingProcessor;
+use App\Model\Product\Processor\ProductListExtractionProcessor;
+use App\Model\Product\Writer\Enum\ProductWriteSource;
 use App\Model\Product\Writer\ProductWriterCSV;
 use App\Model\Product\Writer\ProductWriterFactory;
 use App\Model\Product\Writer\ProductWriterMySQL;
@@ -24,9 +25,9 @@ class ProductTest extends TestCase
         );
 
         $productDTOs = [new ProductDTO('test', 100, 'test', 'imageUrl')];
-        $productListParser = $this->createMock(TelemartProductListParser::class);
+        $productListParser = $this->createStub(TelemartProductListParser::class);
         $productListParser->method('parse')->willReturn($productDTOs);
-        $productListParsingProcessor = new ProductListParsingProcessor(
+        $productListExtractionProcessor = new ProductListExtractionProcessor(
             $productListParser,
             $productWriterFactory
         );
@@ -34,11 +35,24 @@ class ProductTest extends TestCase
         // Dry run: OFF
         $productWriterMySQL->expects($this->once())->method('write')->with($productDTOs);
         $productWriterCSV->expects($this->once())->method('write')->with($productDTOs);
-        $productListParsingProcessor->process();
+        $productListExtractionProcessor->process();
 
         // Dry run: ON
         $productWriterMySQL->expects($this->never())->method('write');
         $productWriterCSV->expects($this->never())->method('write');
-        $productListParsingProcessor->process(true);
+        $productListExtractionProcessor->process(true);
+    }
+
+    public function test_exception_on_forbidden_product_write_source(): void
+    {
+        $productWriterMySQL = $this->createStub(ProductWriterMySQL::class);
+        $productWriterCSV = $this->createStub(ProductWriterCSV::class);
+        $productWriterFactory = new ProductWriterFactory(
+            $productWriterMySQL,
+            $productWriterCSV,
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $productWriterFactory->create(ProductWriteSource::Elasticsearch);
     }
 }
