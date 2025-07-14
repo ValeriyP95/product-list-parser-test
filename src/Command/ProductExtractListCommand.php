@@ -11,10 +11,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:product:parse-list',
-    description: 'Parse product list',
+    name: 'app:product:extract-list',
+    description: 'Extract product list',
 )]
-class ProductParseListCommand extends Command
+class ProductExtractListCommand extends Command
 {
     public function __construct(
         private ProductListExtractionProcessor $productListExtractionProcessor,
@@ -35,11 +35,11 @@ class ProductParseListCommand extends Command
 
         $isDryRun = $input->getOption('dry-run');
 
-        $io->info('Starting processing product list parsing with dry run mode: ' . ($isDryRun ? 'ON' : 'OFF') . '.');
+        $io->info('Starting processing product list extraction with dry run mode: ' . ($isDryRun ? 'ON' : 'OFF') . '.');
 
         $this->productListExtractionProcessor->process($isDryRun);
 
-        $io->success('Product list parsing processed successfully.');
+        $io->success('Product list extraction processed successfully.');
 
         return Command::SUCCESS;
     }
